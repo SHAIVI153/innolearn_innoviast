@@ -1,213 +1,242 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/sample_data.dart';
+
 import '../../services/progress_service.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/responsive_layout.dart';
 
-class ProgressScreen extends StatelessWidget {
+/// TODO: Replace this with your real course/lesson data source
+/// (e.g. a CourseRepository or the same list CourseListScreen uses).
+/// Kept here only so this screen can compute totals without needing
+/// another file. Swap `_totalLessons` / `_totalCourses` for your real counts.
+const int _totalCourses = 4;
+const int _totalLessons = 5;
+
+class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
+
+  @override
+  State<ProgressScreen> createState() => _ProgressScreenState();
+}
+
+class _ProgressScreenState extends State<ProgressScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Make sure saved progress is loaded from SharedPreferences.
+    final progress = context.read<ProgressService>();
+    if (!progress.isLoaded) {
+      progress.load();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final progress = context.watch<ProgressService>();
-    final allLessons =
-        SampleData.courses.expand((c) => c.lessons).toList(growable: false);
-    final completed = allLessons
-        .where((l) => progress.isLessonComplete(l.id))
-        .length;
-    final overallPct =
-        allLessons.isEmpty ? 0.0 : completed / allLessons.length;
-    final quizzesTaken = progress.quizScores.length;
-    final avgScorePct = quizzesTaken == 0
-        ? 0.0
-        : progress.quizScores.values.reduce((a, b) => a + b) /
-            (quizzesTaken * 2); // rough normalizer, most lessons have ~2 Qs
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        children: [
-          ResponsiveContentWidth(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    final lessonsDone = progress.completedLessonIds.length;
+    final quizzesTaken = progress.quizScores.length;
+    final avgScore = quizzesTaken == 0
+        ? 0.0
+        : progress.quizScores.values.reduce((a, b) => a + b) / quizzesTaken;
+    final overallPercent =
+    _totalLessons == 0 ? 0.0 : lessonsDone / _totalLessons;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Text(
+              'Your Progress',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Tracking your learning journey',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 20),
+
+            // ---- Overall completion gradient card ----
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(AppRadii.lg),
+              ),
+              child: Row(
                 children: [
-                  Text('Your Progress', style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 4),
-                  Text('Tracking your learning journey',
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(AppRadii.lg),
-                    ),
-                    child: Row(
+                  SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: overallPct),
-                          duration: const Duration(milliseconds: 900),
-                          curve: Curves.easeOutCubic,
-                          builder: (context, value, _) => Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              SizedBox(
-                                width: 84,
-                                height: 84,
-                                child: CircularProgressIndicator(
-                                  value: value,
-                                  strokeWidth: 8,
-                                  backgroundColor: Colors.white24,
-                                  valueColor:
-                                      const AlwaysStoppedAnimation(Colors.white),
-                                ),
-                              ),
-                              Text('${(value * 100).round()}%',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700)),
-                            ],
-                          ),
+                        CircularProgressIndicator(
+                          value: overallPercent,
+                          strokeWidth: 6,
+                          backgroundColor: Colors.white.withOpacity(0.25),
+                          valueColor:
+                          const AlwaysStoppedAnimation(Colors.white),
                         ),
-                        const SizedBox(width: 20),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Overall completion',
-                                  style: TextStyle(
-                                      color: Colors.white, fontWeight: FontWeight.w600)),
-                              const SizedBox(height: 4),
-                              Text('$completed of ${allLessons.length} lessons done',
-                                  style: const TextStyle(color: Colors.white70)),
-                            ],
+                        Text(
+                          '${(overallPercent * 100).round()}%',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  LayoutBuilder(builder: (context, constraints) {
-                    final columns =
-                        responsiveColumns(context, mobile: 2, tablet: 3, desktop: 4);
-                    final stats = [
-                      _Stat('Courses', '${SampleData.courses.length}', Icons.menu_book_rounded),
-                      _Stat('Lessons done', '$completed', Icons.check_circle_rounded),
-                      _Stat('Quizzes taken', '$quizzesTaken', Icons.quiz_rounded),
-                      _Stat('Avg. quiz score', '${(avgScorePct.clamp(0, 1) * 100).round()}%',
-                          Icons.emoji_events_rounded),
-                    ];
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: stats.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: columns,
-                        mainAxisExtent: 96,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemBuilder: (context, i) => _StatCard(stat: stats[i]),
-                    );
-                  }),
-                  const SizedBox(height: 24),
-                  Text('Course breakdown', style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 12),
-                  ...SampleData.courses.map((course) {
-                    final pct = progress.progressForLessonIds(
-                        course.lessons.map((l) => l.id).toList());
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(course.emoji, style: const TextStyle(fontSize: 22)),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(course.title,
-                                      style: Theme.of(context).textTheme.titleMedium),
-                                ),
-                                Text('${(pct * 100).round()}%',
-                                    style: const TextStyle(
-                                        color: AppColors.primary,
-                                        fontWeight: FontWeight.w600)),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(AppRadii.pill),
-                              child: TweenAnimationBuilder<double>(
-                                tween: Tween(begin: 0, end: pct),
-                                duration: const Duration(milliseconds: 700),
-                                builder: (context, value, _) => LinearProgressIndicator(
-                                  value: value,
-                                  minHeight: 8,
-                                  backgroundColor: Colors.grey.shade200,
-                                  valueColor:
-                                      const AlwaysStoppedAnimation(AppColors.primary),
-                                ),
-                              ),
-                            ),
-                          ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Overall completion',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                    );
-                  }),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$lessonsDone of $_totalLessons lessons done',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+
+            // ---- Stat cards grid (overflow-safe) ----
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              // Taller aspect ratio gives cards more vertical room,
+              // which is what fixes the "overflowed by 10.0 pixels" error.
+              childAspectRatio: 1.5,
+              children: [
+                _StatCard(
+                  icon: Icons.menu_book_rounded,
+                  value: '$_totalCourses',
+                  label: 'Courses',
+                ),
+                _StatCard(
+                  icon: Icons.check_circle_rounded,
+                  value: '$lessonsDone',
+                  label: 'Lessons done',
+                ),
+                _StatCard(
+                  icon: Icons.quiz_rounded,
+                  value: '$quizzesTaken',
+                  label: 'Quizzes taken',
+                ),
+                _StatCard(
+                  icon: Icons.emoji_events_rounded,
+                  value: '${avgScore.round()}%',
+                  label: 'Avg. quiz score',
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            Text(
+              'Course breakdown',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 12),
+
+            // TODO: Wire this to your real course list + per-course
+            // progress via progress.progressForLessonIds(lessonIdsForCourse).
+            if (lessonsDone == 0 && quizzesTaken == 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Text(
+                    'Start a lesson to see your course breakdown here.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _Stat {
-  final String label;
-  final String value;
-  final IconData icon;
-  const _Stat(this.label, this.value, this.icon);
-}
-
+/// A single stat card. Uses `mainAxisSize.min` + no fixed height so the
+/// content never overflows regardless of font scaling or screen size.
 class _StatCard extends StatelessWidget {
-  final _Stat stat;
-  const _StatCard({required this.stat});
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const _StatCard({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(stat.icon, color: AppColors.primary),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 20),
+          ),
           const SizedBox(height: 8),
-          Text(stat.value,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          Text(stat.label, style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textDark,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppColors.textMuted,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );

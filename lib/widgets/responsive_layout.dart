@@ -95,8 +95,12 @@ class AdaptiveShell extends StatelessWidget {
               backgroundColor: Colors.white,
               selectedIndex: currentIndex,
               onDestinationSelected: onDestinationSelected,
-              labelType: NavigationRailLabelType.all,
+              // FIX: labelType must be none/null whenever extended is true,
+              // otherwise Flutter throws an assertion error.
               extended: Breakpoints.isDesktop(width),
+              labelType: Breakpoints.isDesktop(width)
+                  ? NavigationRailLabelType.none
+                  : NavigationRailLabelType.all,
               selectedIconTheme: const IconThemeData(color: AppColors.primary),
               selectedLabelTextStyle:
                   const TextStyle(color: AppColors.primary),
