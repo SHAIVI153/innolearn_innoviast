@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 import '../../data/sample_data.dart';
 import '../../services/progress_service.dart';
 import '../../theme/app_theme.dart';
@@ -22,7 +23,59 @@ class LessonDetailScreen extends StatefulWidget {
 
 class _LessonDetailScreenState extends State<LessonDetailScreen> {
   late int _currentIndex = widget.lessonIndex;
-  bool _playing = false;
+
+  VideoPlayerController? _controller;
+  bool _isLoadingVideo = false;
+  bool _hasVideoError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVideoForCurrentLesson();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  void _loadVideoForCurrentLesson() {
+    // Tear down any previous controller before loading the new lesson's video.
+    _controller?.dispose();
+    _controller = null;
+    _hasVideoError = false;
+
+    final course = SampleData.courseById(widget.courseId);
+    final lesson = course.lessons[_currentIndex];
+    final url = lesson.videoUrl;
+
+    if (url == null || url.isEmpty) {
+      setState(() => _isLoadingVideo = false);
+      return;
+    }
+
+    setState(() => _isLoadingVideo = true);
+
+    final controller = VideoPlayerController.networkUrl(Uri.parse(url));
+    _controller = controller;
+
+    controller.initialize().then((_) {
+      if (!mounted || _controller != controller) return;
+      setState(() => _isLoadingVideo = false);
+    }).catchError((_) {
+      if (!mounted || _controller != controller) return;
+      setState(() {
+        _isLoadingVideo = false;
+        _hasVideoError = true;
+      });
+    });
+  }
+
+  void _selectLesson(int index) {
+    setState(() => _currentIndex = index);
+    _loadVideoForCurrentLesson();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,40 +110,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              // Animated "video player" placeholder
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: GestureDetector(
-                  onTap: () => setState(() => _playing = !_playing),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: gradient,
-                      borderRadius: BorderRadius.circular(AppRadii.lg),
-                    ),
-                    child: Center(
-                      child: AnimatedScale(
-                        scale: _playing ? 1.15 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            _playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: AppColors.primary,
-                            size: 34,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              _buildVideoPlayer(gradient),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,7 +121,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                   ),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(AppRadii.pill),
@@ -127,10 +147,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                   color: selected ? AppColors.primary.withOpacity(0.06) : Colors.white,
                   margin: const EdgeInsets.only(bottom: 10),
                   child: ListTile(
-                    onTap: () => setState(() {
-                      _currentIndex = i;
-                      _playing = false;
-                    }),
+                    onTap: () => _selectLesson(i),
                     leading: Icon(
                       done
                           ? Icons.check_circle_rounded
@@ -141,7 +158,7 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
                     subtitle: Text(l.durationLabel),
                     trailing: selected
                         ? const Icon(Icons.equalizer_rounded,
-                            color: AppColors.primary)
+                        color: AppColors.primary)
                         : null,
                   ),
                 );
@@ -173,6 +190,94 @@ class _LessonDetailScreenState extends State<LessonDetailScreen> {
               ),
               const SizedBox(height: 24),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoPlayer(LinearGradient gradient) {
+    final controller = _controller;
+    final ready = controller != null && controller.value.isInitialized;
+
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        child: Container(
+          decoration: BoxDecoration(gradient: gradient),
+          child: ready
+              ? Stack(
+            fit: StackFit.expand,
+            children: [
+              FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: controller.value.size.width,
+                  height: controller.value.size.height,
+                  child: VideoPlayer(controller),
+                ),
+              ),
+              AnimatedBuilder(
+                animation: controller,
+                builder: (context, _) {
+                  final playing = controller.value.isPlaying;
+                  return GestureDetector(
+                    onTap: () => setState(() {
+                      playing ? controller.pause() : controller.play();
+                    }),
+                    child: AnimatedOpacity(
+                      opacity: playing ? 0 : 1,
+                      duration: const Duration(milliseconds: 200),
+                      child: Container(
+                        color: Colors.black26,
+                        child: Center(
+                          child: Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.play_arrow_rounded,
+                              color: AppColors.primary,
+                              size: 34,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: VideoProgressIndicator(
+                  controller,
+                  allowScrubbing: true,
+                  padding: const EdgeInsets.all(8),
+                  colors: const VideoProgressColors(
+                    playedColor: Colors.white,
+                    bufferedColor: Colors.white38,
+                    backgroundColor: Colors.white12,
+                  ),
+                ),
+              ),
+            ],
+          )
+              : Center(
+            child: _isLoadingVideo
+                ? const CircularProgressIndicator(color: Colors.white)
+                : Icon(
+              _hasVideoError
+                  ? Icons.error_outline_rounded
+                  : Icons.play_circle_fill_rounded,
+              color: Colors.white,
+              size: 48,
+            ),
           ),
         ),
       ),

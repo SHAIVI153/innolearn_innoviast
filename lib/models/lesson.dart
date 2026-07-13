@@ -6,6 +6,7 @@ class Lesson {
   final String durationLabel; // e.g. "6:12"
   final String content;
   final List<QuizQuestion> quiz;
+  final String? videoUrl; // network video played inline on the lesson screen
 
   const Lesson({
     required this.id,
@@ -13,5 +14,6 @@ class Lesson {
     required this.durationLabel,
     required this.content,
     this.quiz = const [],
+    this.videoUrl,
   });
 }
