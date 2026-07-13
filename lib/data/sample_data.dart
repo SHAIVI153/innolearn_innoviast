@@ -25,7 +25,7 @@ class SampleData {
           id: 'l1',
           title: 'Introduction to UX Thinking',
           durationLabel: '6:12',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=N-xuqy6x1Bw',
           content:
           'Learn how great products start with empathy for the user. '
               'We cover the double-diamond process: discover, define, '
@@ -55,7 +55,7 @@ class SampleData {
           id: 'l2',
           title: 'Wireframes & Prototypes',
           durationLabel: '8:40',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=I0-vBdh4sZ8',
           content:
           'Wireframes let you validate structure and flow before '
               'investing in visual design. We compare low-fidelity '
@@ -78,7 +78,7 @@ class SampleData {
           id: 'l1b',
           title: 'Design Systems in Practice',
           durationLabel: '8:20',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=ot_XIhpJezs',
           content:
           'A design system is a shared library of colors, type styles, '
               'and reusable components that keeps an app visually '
@@ -135,7 +135,7 @@ class SampleData {
           id: 'l1c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '3:45',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=N-xuqy6x1Bw',
           content:
           'A quick recap of the UX/UI journey so far: empathizing with '
               'users, sketching wireframes, and building a consistent '
@@ -188,7 +188,7 @@ class SampleData {
           id: 'l3',
           title: 'Breakpoints & Fluid Grids',
           durationLabel: '7:05',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=6Yh8y0pVfQc',
           content:
           'A responsive layout adapts gracefully across mobile, '
               'tablet, and desktop by using flexible grids and '
@@ -211,7 +211,7 @@ class SampleData {
           id: 'l3b',
           title: 'Flexbox & Grid Layouts',
           durationLabel: '8:00',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=IxaN8D0Oz9U',
           content:
           'CSS Flexbox and Grid give you precise control over how '
               'content lines up and wraps on different screen sizes. This '
@@ -267,7 +267,7 @@ class SampleData {
           id: 'l3c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '4:10',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=ITwD8Iq_ahs',
           content:
           'Let\u2019s review what makes a layout truly responsive: fluid '
               'grids, smart breakpoints, and the right mix of Flexbox and '
@@ -342,7 +342,7 @@ class SampleData {
           id: 'l4',
           title: 'Color Theory Essentials',
           durationLabel: '5:30',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=2QTHs7QSR9o',
           content:
           'Color communicates emotion and hierarchy. This lesson '
               'covers complementary, analogous, and triadic color '
@@ -365,7 +365,7 @@ class SampleData {
           id: 'l4b',
           title: 'Typography Fundamentals',
           durationLabel: '6:45',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=NBg3GjrcMF4',
           content:
           'Good typography guides the eye and sets the tone of a '
               'design. We cover font pairing, hierarchy, line height, and '
@@ -421,7 +421,7 @@ class SampleData {
           id: 'l4c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '4:00',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=SGT1l9AukLc',
           content:
           'From color wheels to font pairing, this recap ties '
               'together the visual design basics covered in the course '
@@ -500,7 +500,7 @@ class SampleData {
           id: 'l5',
           title: 'Widgets & Navigation in Flutter',
           durationLabel: '9:15',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=5lDJNFSWUD8',
           content:
           'Flutter apps are built from widgets composed into a '
               'tree. Navigator manages the screen stack, letting you '
@@ -523,7 +523,7 @@ class SampleData {
           id: 'l5b',
           title: 'State Management Basics',
           durationLabel: '9:30',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=xAZs0QDRQBQ',
           content:
           'As apps grow, managing state cleanly becomes essential. '
               'We compare setState, Provider, and simple service classes '
@@ -579,7 +579,7 @@ class SampleData {
           id: 'l5c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '5:00',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=C6nTXjQFVKI',
           content:
           'This final lesson reviews Flutter navigation, widget '
               'composition, and state management, then checks your '
@@ -653,7 +653,7 @@ class SampleData {
           id: 'l6',
           title: 'Why Task Management Matters',
           durationLabel: '5:20',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=oXX9vCC-yb8',
           content:
           'A clear task system reduces stress and helps you focus on '
               'what matters most. This lesson introduces categories, due '
@@ -699,7 +699,7 @@ class SampleData {
           id: 'l6b',
           title: 'Prioritization: The Eisenhower Matrix',
           durationLabel: '7:15',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=xgp6eELYY1M',
           content:
           'The Eisenhower Matrix sorts tasks into four quadrants by '
               'urgency and importance, helping you decide what to do now, '
@@ -755,7 +755,7 @@ class SampleData {
           id: 'l6c',
           title: 'Building Habits & Course Assessment',
           durationLabel: '4:50',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=qdQg3PKftoM',
           content:
           'Small daily habits, like reviewing your list each morning '
               'and clearing completed tasks, keep a productivity system '
@@ -813,7 +813,7 @@ class SampleData {
           id: 'l8',
           title: 'Components & Props',
           durationLabel: '8:10',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=Fz0jaApePCk',
           content:
           'React Native apps are built from reusable components. '
               'This lesson covers how props pass data into a component '
@@ -858,7 +858,7 @@ class SampleData {
           id: 'l8b',
           title: 'Navigation & State',
           durationLabel: '9:00',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=kzyrn3dKn7Y',
           content:
           'React Navigation lets you move between screens, while '
               'local state (via useState) keeps track of things like '
@@ -914,7 +914,7 @@ class SampleData {
           id: 'l8c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '5:30',
-          videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+          videoUrl: 'https://www.youtube.com/watch?v=Fz0jaApePCk',
           content:
           'A recap of components, props, navigation, and state '
               'management in React Native, followed by a short '

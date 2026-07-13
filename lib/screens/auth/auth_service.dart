@@ -35,13 +35,17 @@ class AuthService extends ChangeNotifier {
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
+      debugPrint('SIGNUP ERROR -> code: ${e.code}, message: ${e.message}');
       errorMessage = _friendlyError(e.code);
+      _setLoading(false);
+      return false;
+    } catch (e) {
+      debugPrint('SIGNUP UNKNOWN ERROR -> $e');
+      errorMessage = 'Something went wrong. Please try again.';
       _setLoading(false);
       return false;
     }
   }
-
-  /// ---------- LOGIN ----------
   Future<bool> signIn({
     required String email,
     required String password,
@@ -56,13 +60,17 @@ class AuthService extends ChangeNotifier {
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
+      debugPrint('LOGIN ERROR -> code: ${e.code}, message: ${e.message}');
       errorMessage = _friendlyError(e.code);
+      _setLoading(false);
+      return false;
+    } catch (e) {
+      debugPrint('LOGIN UNKNOWN ERROR -> $e');
+      errorMessage = 'Something went wrong. Please try again.';
       _setLoading(false);
       return false;
     }
   }
-
-  /// ---------- LOGOUT ----------
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }

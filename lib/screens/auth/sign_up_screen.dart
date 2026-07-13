@@ -4,7 +4,6 @@ import 'package:innolearn_innoviast/screens/auth/auth_service.dart';
 import 'package:innolearn_innoviast/screens/auth/firestore_service.dart';
 import 'package:provider/provider.dart';
 
-
 import '../../theme/app_theme.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -46,7 +45,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
       );
-      // AuthGate in main.dart auto-navigates to MainNavigation.
+      if (!mounted) return;
+      // AuthGate (root widget) already rebuilt itself to MainNavigation
+      // via the auth stream, but SignUpScreen (and WelcomeScreen below it)
+      // are still stacked on top of it in the Navigator. Pop back to root
+      // to reveal it immediately instead of requiring a manual refresh.
+      Navigator.of(context).popUntil((route) => route.isFirst);
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(auth.errorMessage ?? 'Sign up failed')),
