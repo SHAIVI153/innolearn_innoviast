@@ -135,7 +135,7 @@ class SampleData {
           id: 'l1c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '3:45',
-          videoUrl: 'https://www.youtube.com/watch?v=N-xuqy6x1Bw',
+          videoUrl: 'https://www.youtube.com/watch?v=rRrtiehgqYY',
           content:
           'A quick recap of the UX/UI journey so far: empathizing with '
               'users, sketching wireframes, and building a consistent '
@@ -914,7 +914,7 @@ class SampleData {
           id: 'l8c',
           title: 'Course Wrap-up & Assessment',
           durationLabel: '5:30',
-          videoUrl: 'https://www.youtube.com/watch?v=Fz0jaApePCk',
+          videoUrl: 'https://www.youtube.com/watch?v=XOzKMdMNBRo',
           content:
           'A recap of components, props, navigation, and state '
               'management in React Native, followed by a short '
