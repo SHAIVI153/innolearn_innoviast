@@ -13,7 +13,7 @@ class _OnboardPage {
 const _pages = [
   _OnboardPage(
     '📚',
-    'Learning at Home, Anything',
+    'Learning at Home, Anything & Anywhere',
     'We are providing the best online courses for your bright future.',
   ),
   _OnboardPage(

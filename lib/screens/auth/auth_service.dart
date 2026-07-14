@@ -94,9 +94,9 @@ class AuthService extends ChangeNotifier {
   /// Converts Firebase's raw error codes into readable messages.
   String _friendlyError(String code) {
     switch (code) {
-      case 'email-already-in-use':
+      case 'Email-already-in-use':
         return 'This email is already registered. Please login instead.';
-      case 'invalid-email':
+      case 'invalid-Email':
         return 'Please enter a valid email address.';
       case 'weak-password':
         return 'Password should be at least 6 characters.';
